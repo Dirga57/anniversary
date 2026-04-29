@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Anniversary ❤️</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --rose: #e8728a;
+  --rose-light: #f5a8b8;
+  --rose-pale: #fce8ed;
+  --gold: #c9a86c;
+  --gold-light: #e8d5a8;
+  --deep: #1a0a10;
+  --mid: #2d0f1a;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: var(--deep);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* ===== CANVAS BINTANG ===== */
+#starCanvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ===== HALAMAN AWAL ===== */
+#startPage {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+/* Kartu utama */
+.card {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  background: linear-gradient(160deg, rgba(45,15,26,0.95) 0%, rgba(26,10,16,0.98) 100%);
+  border: 1px solid rgba(201,168,108,0.3);
+  border-radius: 24px;
+  padding: 40px 32px 36px;
+  text-align: center;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 0 60px rgba(232,114,138,0.15), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+/* Ornamen sudut */
+.card::before, .card::after {
+  content: '';
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-color: rgba(201,168,108,0.25);
+  border-style: solid;
+}
+.card::before {
+  top: 14px; left: 14px;
+  border-width: 1px 0 0 1px;
+  border-radius: 8px 0 0 0;
+}
+.card::after {
+  bottom: 14px; right: 14px;
+  border-width: 0 1px 1px 0;
+  border-radius: 0 0 8px 0;
+}
+
+/* Glow di atas kartu */
+.card-glow {
+  position: absolute;
+  top: -60px; left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 120px;
+  background: radial-gradient(ellipse, rgba(232,114,138,0.35) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Rose ornament */
+.rose-top {
+  font-size: 32px;
+  margin-bottom: 6px;
+  display: block;
+  animation: floatRose 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 12px rgba(232,114,138,0.6));
+}
+@keyframes floatRose {
+  0%,100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-6px) scale(1.05); }
+}
+
+/* Label kecil atas */
+.label-top {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 4px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  opacity: 0.8;
+}
+
+/* Judul utama */
+.main-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px;
+  font-weight: 300;
+  color: #fff;
+  line-height: 1.15;
+  margin-bottom: 6px;
+  text-shadow: 0 0 30px rgba(232,114,138,0.4);
+}
+.main-title em {
+  font-style: italic;
+  color: var(--rose-light);
+}
+
+/* Garis divider */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0;
+}
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,108,0.4), transparent);
+}
+.divider-diamond {
+  width: 5px;
+  height: 5px;
+  background: var(--gold);
+  transform: rotate(45deg);
+  opacity: 0.6;
+}
+
+/* Nama */
+.nama {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  font-style: italic;
+  color: var(--rose-light);
+  letter-spacing: 0.5px;
+  line-height: 1.5;
+  margin-bottom: 4px;
+}
+
+/* Tanggal */
+.tanggal {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 3px;
+  color: var(--gold-light);
+  margin-bottom: 18px;
+  opacity: 0.75;
+}
+
+/* Counter */
+.counter {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+.counter-unit {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(201,168,108,0.2);
+  border-radius: 10px;
+  padding: 10px 10px 8px;
+  min-width: 62px;
+}
+.counter-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 400;
+  color: #fff;
+  line-height: 1;
+  display: block;
+}
+.counter-lbl {
+  font-size: 7.5px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  text-transform: uppercase;
+  display: block;
+  margin-top: 4px;
+  opacity: 0.7;
+}
+
+/* Pesan */
+.pesan {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: rgba(245,168,184,0.7);
+  margin-bottom: 28px;
+  line-height: 1.6;
+  min-height: 22px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Tombol */
+.btn-open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, rgba(232,114,138,0.9), rgba(185,80,105,0.9));
+  border: none;
+  border-radius: 50px;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(232,114,138,0.35);
+}
+.btn-open::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transition: left 0.5s;
+}
+.btn-open:hover::before { left: 100%; }
+.btn-open:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(232,114,138,0.5); }
+.btn-open:active { transform: translateY(0); }
+
+.btn-icon { font-size: 14px; animation: heartbeat 1.5s ease-in-out infinite; }
+@keyframes heartbeat {
+  0%,100% { transform: scale(1); }
+  20% { transform: scale(1.25); }
+  40% { transform: scale(1); }
+  60% { transform: scale(1.15); }
+}
+
+/* Partikel hati terbang */
+.particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99;
+  overflow: hidden;
+}
+.particle {
+  position: absolute;
+  bottom: -20px;
+  font-size: 14px;
+  animation: riseUp linear infinite;
+  opacity: 0;
+}
+@keyframes riseUp {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.7; }
+  90% { opacity: 0.3; }
+  100% { transform: translateY(-105vh) rotate(360deg); opacity: 0; }
+}
+
+/* ===== HALAMAN ANIMASI (TIDAK DIUBAH) ===== */
+#mainPage {
+  display: none;
+}
+
+.text {
+  position: absolute;
+  color: #ff4da6;
+  font-size: 14px;
+  animation: floatDown linear infinite;
+  text-shadow: 0 0 8px pink;
+  max-width: 80%;
+  text-align: center;
+}
+
+.photo {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  object-fit: cover;
+  animation: floatDown linear infinite;
+  box-shadow: 0 0 10px pink;
+}
+
+@keyframes floatDown {
+  from { transform: translateY(-100px); opacity: 0; }
+  to { transform: translateY(110vh); opacity: 1; }
+}
+
+#musicBtn {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 14px;
+  border: none;
+  border-radius: 30px;
+  background: rgba(255, 77, 166, 0.85);
+  color: white;
+  font-size: 13px;
+  font-family: 'Comic Sans MS', cursive;
+  z-index: 10;
+  box-shadow: 0 0 10px pink;
+  cursor: pointer;
+}
+
+.bottom-text {
+  position: fixed;
+  bottom: 25px;
+  width: 100%;
+  text-align: center;
+  color: pink;
+  font-size: 12px;
+  font-family: 'Comic Sans MS', cursive;
+}
+
+#backBtn {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.85);
+  color: #ff4b6e;
+  font-size: 12px;
+  font-family: 'Comic Sans MS', cursive;
+  z-index: 20;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Canvas bintang -->
+<canvas id="starCanvas"></canvas>
+
+<!-- Partikel hati -->
+<div class="particles" id="particles"></div>
+
+<!-- ===== HALAMAN AWAL (UPGRADED) ===== -->
+<div id="startPage">
+  <div class="card">
+    <div class="card-glow"></div>
+
+    <span class="rose-top">🌹</span>
+    <div class="label-top">Spesial untuk</div>
+
+    <h1 class="main-title">Happy<br><em>3rd Anniversary</em></h1>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-diamond"></div>
+      <div class="divider-line"></div>
+    </div>
+
+    <p class="nama">Najwa Khoirunnisa' Az-Zahro<br>Fii Sabilillah 💕</p>
+    <p class="tanggal">04 MEI 2023 — SELAMANYA</p>
+
+    <div class="counter">
+      <div class="counter-unit">
+        <span class="counter-num" id="cntY">0</span>
+        <span class="counter-lbl">Tahun</span>
+      </div>
+      <div class="counter-unit">
+        <span class="counter-num" id="cntM">0</span>
+        <span class="counter-lbl">Bulan</span>
+      </div>
+      <div class="counter-unit">
+        <span class="counter-num" id="cntD">0</span>
+        <span class="counter-lbl">Hari</span>
+      </div>
+    </div>
+
+    <p class="pesan" id="pesanEl"></p>
+
+    <button class="btn-open" onclick="startExperience()">
+      <span class="btn-icon">💌</span>
+      <span>Buka yaa Sayang</span>
+    </button>
+  </div>
+</div>
+
+<!-- ===== HALAMAN ANIMASI (TIDAK DIUBAH SAMA SEKALI) ===== -->
+<div id="mainPage">
+  <button id="backBtn" onclick="goBack()">← Kembali</button>
+  <button id="musicBtn" onclick="toggleMusic()">🎵 Play</button>
+  <div class="bottom-text">untuk kamu yang paling spesial 💖</div>
+</div>
+
+<audio id="music" src="Give Me Your Forever.mp3" loop></audio>
+
+<script>
+/* ===== BINTANG ===== */
+const canvas = document.getElementById('starCanvas');
+const ctx = canvas.getContext('2d');
+let stars = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+function initStars() {
+  stars = [];
+  for (let i = 0; i < 120; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.2 + 0.2,
+      a: Math.random(),
+      speed: Math.random() * 0.008 + 0.003,
+      phase: Math.random() * Math.PI * 2
+    });
+  }
+}
+
+function drawStars(t) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  stars.forEach(s => {
+    s.a = 0.3 + 0.5 * Math.sin(t * s.speed + s.phase);
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${s.a})`;
+    ctx.fill();
+  });
+  requestAnimationFrame(drawStars);
+}
+
+resizeCanvas();
+initStars();
+requestAnimationFrame(drawStars);
+window.addEventListener('resize', () => { resizeCanvas(); initStars(); });
+
+/* ===== PARTIKEL HATI ===== */
+const pCont = document.getElementById('particles');
+const pEmojis = ['❤️','💕','💗','💖','🌸','✨','💝'];
+function spawnParticle() {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  p.innerText = pEmojis[Math.floor(Math.random() * pEmojis.length)];
+  p.style.left = Math.random() * 100 + 'vw';
+  const dur = 6 + Math.random() * 6;
+  p.style.animationDuration = dur + 's';
+  p.style.animationDelay = Math.random() * 3 + 's';
+  p.style.fontSize = (10 + Math.random() * 12) + 'px';
+  pCont.appendChild(p);
+  setTimeout(() => p.remove(), (dur + 3) * 1000);
+}
+setInterval(spawnParticle, 700);
+
+/* ===== COUNTER HARI BERSAMA ===== */
+function updateCounter() {
+  const start = new Date('2023-05-04T00:00:00');
+  const now = new Date();
+  let y = now.getFullYear() - start.getFullYear();
+  let m = now.getMonth() - start.getMonth();
+  let d = now.getDate() - start.getDate();
+  if (d < 0) { m--; d += 30; }
+  if (m < 0) { y--; m += 12; }
+  document.getElementById('cntY').textContent = y;
+  document.getElementById('cntM').textContent = m;
+  document.getElementById('cntD').textContent = d;
+}
+updateCounter();
+
+/* ===== PESAN TYPEWRITER ===== */
+const pesanList = [
+  'makasih ya udah 2 tahun bareng aku 🥹',
+  'kamu adalah rumahku yang paling hangat 🏡',
+  'selalu bareng ya, selamanya 💞',
+  'you are my everything, forever 💗'
+];
+let pesanIdx = 0;
+let charIdx = 0;
+let typing = true;
+const pesanEl = document.getElementById('pesanEl');
+
+function typewriter() {
+  const current = pesanList[pesanIdx];
+  if (typing) {
+    if (charIdx <= current.length) {
+      pesanEl.textContent = current.slice(0, charIdx++);
+      setTimeout(typewriter, 55);
+    } else {
+      typing = false;
+      setTimeout(typewriter, 2200);
+    }
+  } else {
+    if (charIdx > 0) {
+      pesanEl.textContent = current.slice(0, --charIdx);
+      setTimeout(typewriter, 25);
+    } else {
+      typing = true;
+      pesanIdx = (pesanIdx + 1) % pesanList.length;
+      setTimeout(typewriter, 400);
+    }
+  }
+}
+typewriter();
+
+/* ===== LOGIC HALAMAN (TIDAK DIUBAH) ===== */
+let started = false;
+
+function startExperience() {
+  if (started) return;
+  started = true;
+  document.getElementById('startPage').style.display = 'none';
+  document.getElementById('particles').style.display = 'none';
+  document.getElementById('starCanvas').style.display = 'none';
+  document.getElementById('mainPage').style.display = 'block';
+  startAnimation();
+}
+
+function goBack() {
+  document.getElementById('mainPage').style.display = 'none';
+  document.getElementById('startPage').style.display = 'flex';
+  document.getElementById('particles').style.display = 'block';
+  document.getElementById('starCanvas').style.display = 'block';
+  const music = document.getElementById('music');
+  music.pause();
+  music.currentTime = 0;
+  isPlaying = false;
+  document.getElementById('musicBtn').innerText = '🎵 Play';
+  started = false;
+}
+
+/* ===== ANIMASI HALAMAN KEDUA (TIDAK DIUBAH) ===== */
+const texts = [
+  "Happy 3rd Anniversary ❤️",
+  "Najwa ❤️",
+  "Najwa Khoirunnisa' Az-Zahro 💕",
+  "04 Mei 💖",
+  "3 Tahun Bersama 💞",
+  "Aku sayang kamu 💘",
+  "Terima kasih sudah bertahan 🥹",
+  "Kamu rumahku 🏡💞",
+  "Selalu bareng yaa 💑",
+  "You are my everything 💗",
+  "Love you forever 💝",
+  "Forever us 💞"
+];
+
+const photos = ["foto1.jpg","foto2.jpg","foto3.jpg"];
+let maxItems = 20;
+
+function startAnimation() {
+  const container = document.getElementById('mainPage');
+  setInterval(() => {
+    if (container.children.length > maxItems) return;
+    const t = document.createElement('div');
+    t.className = 'text';
+    t.innerText = texts[Math.floor(Math.random() * texts.length)];
+    t.style.left = Math.random() * 90 + 'vw';
+    t.style.animationDuration = (5 + Math.random() * 5) + 's';
+    container.appendChild(t);
+    setTimeout(() => t.remove(), 9000);
+  }, 500);
+
+  setInterval(() => {
+    if (container.children.length > maxItems) return;
+    const img = document.createElement('img');
+    img.className = 'photo';
+    img.src = photos[Math.floor(Math.random() * photos.length)];
+    img.style.left = Math.random() * 85 + 'vw';
+    img.style.animationDuration = (6 + Math.random() * 5) + 's';
+    container.appendChild(img);
+    setTimeout(() => img.remove(), 10000);
+  }, 1500);
+}
+
+/* ===== MUSIK (TIDAK DIUBAH) ===== */
+let isPlaying = false;
+function toggleMusic() {
+  const music = document.getElementById('music');
+  const btn = document.getElementById('musicBtn');
+  if (!isPlaying) {
+    music.play();
+    btn.innerText = '⏸ Pause';
+  } else {
+    music.pause();
+    btn.innerText = '🎵 Play';
+  }
+  isPlaying = !isPlaying;
+}
+</script>
+
+</body>
+</html>
