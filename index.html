@@ -288,6 +288,49 @@ body {
 /* ===== HALAMAN ANIMASI (TIDAK DIUBAH) ===== */
 #mainPage {
   display: none;
+  perspective: 1200px;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: fixed;
+  inset: 0;
+  background: #0a0015;
+}
+
+#mainPage::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(180,0,255,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 80% 70%, rgba(255,0,150,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 10%, rgba(120,0,200,0.12) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 50% at 10% 80%, rgba(255,20,180,0.1) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+  animation: glowPulse 6s ease-in-out infinite alternate;
+}
+
+@keyframes glowPulse {
+  0%   { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+#neonCanvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+#mainInner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out;
+  will-change: transform;
+  z-index: 2;
 }
 
 .text {
@@ -410,14 +453,17 @@ body {
   </div>
 </div>
 
-<!-- ===== HALAMAN ANIMASI (TIDAK DIUBAH SAMA SEKALI) ===== -->
+<!-- ===== HALAMAN ANIMASI ===== -->
 <div id="mainPage">
-  <button id="backBtn" onclick="goBack()">← Kembali</button>
-  <button id="musicBtn" onclick="toggleMusic()">🎵 Play</button>
-  <div class="bottom-text">untuk kamu yang paling spesial 💖</div>
+  <canvas id="neonCanvas"></canvas>
+  <div id="mainInner">
+    <button id="backBtn" onclick="goBack()">← Kembali</button>
+    <button id="musicBtn" onclick="toggleMusic()">🎵 Play</button>
+    <div class="bottom-text">untuk kamu yang paling spesial 💖</div>
+  </div>
 </div>
 
-<audio id="music" src="Give Me Your Forever.mp3" loop></audio>
+<audio id="music" src="Give Me Your Forever.mp3" loop preload="auto"></audio>
 
 <script>
 /* ===== BINTANG ===== */
@@ -495,7 +541,7 @@ updateCounter();
 
 /* ===== PESAN TYPEWRITER ===== */
 const pesanList = [
-  'makasih ya udah 2 tahun bareng aku 🥹',
+  'makasih ya udah 3 tahun bareng aku 🥹',
   'kamu adalah rumahku yang paling hangat 🏡',
   'selalu bareng ya, selamanya 💞',
   'you are my everything, forever 💗'
@@ -574,9 +620,9 @@ const photos = ["foto1.jpg","foto2.jpg","foto3.jpg"];
 let maxItems = 20;
 
 function startAnimation() {
-  const container = document.getElementById('mainPage');
+  const container = document.getElementById('mainInner');
   setInterval(() => {
-    if (container.children.length > maxItems) return;
+    if(container.children.length > maxItems) return;
     const t = document.createElement('div');
     t.className = 'text';
     t.innerText = texts[Math.floor(Math.random() * texts.length)];
@@ -587,7 +633,7 @@ function startAnimation() {
   }, 500);
 
   setInterval(() => {
-    if (container.children.length > maxItems) return;
+    if(container.children.length > maxItems) return;
     const img = document.createElement('img');
     img.className = 'photo';
     img.src = photos[Math.floor(Math.random() * photos.length)];
@@ -596,6 +642,105 @@ function startAnimation() {
     container.appendChild(img);
     setTimeout(() => img.remove(), 10000);
   }, 1500);
+
+  /* ===== NEON BACKGROUND PARTICLES ===== */
+  const nc = document.getElementById('neonCanvas');
+  const nctx = nc.getContext('2d');
+  nc.width = window.innerWidth;
+  nc.height = window.innerHeight;
+  window.addEventListener('resize', () => { nc.width = window.innerWidth; nc.height = window.innerHeight; });
+
+  const neonColors = [
+    'rgba(255,0,200,', 'rgba(200,0,255,', 'rgba(255,50,180,',
+    'rgba(180,0,255,', 'rgba(255,100,220,'
+  ];
+
+  const nParticles = [];
+  for (let i = 0; i < 80; i++) {
+    nParticles.push({
+      x: Math.random() * nc.width,
+      y: Math.random() * nc.height,
+      r: Math.random() * 1.5 + 0.3,
+      color: neonColors[Math.floor(Math.random() * neonColors.length)],
+      phase: Math.random() * Math.PI * 2,
+      speed: Math.random() * 0.01 + 0.005,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+    });
+  }
+
+  function drawNeon(t) {
+    nctx.clearRect(0, 0, nc.width, nc.height);
+    nParticles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = nc.width;
+      if (p.x > nc.width) p.x = 0;
+      if (p.y < 0) p.y = nc.height;
+      if (p.y > nc.height) p.y = 0;
+      const alpha = 0.3 + 0.5 * Math.sin(t * p.speed + p.phase);
+      // glow
+      const grad = nctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 8);
+      grad.addColorStop(0, p.color + alpha + ')');
+      grad.addColorStop(1, p.color + '0)');
+      nctx.beginPath();
+      nctx.arc(p.x, p.y, p.r * 8, 0, Math.PI * 2);
+      nctx.fillStyle = grad;
+      nctx.fill();
+      // core dot
+      nctx.beginPath();
+      nctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      nctx.fillStyle = p.color + '0.9)';
+      nctx.fill();
+    });
+    requestAnimationFrame(drawNeon);
+  }
+  requestAnimationFrame(drawNeon);
+  const inner = document.getElementById('mainInner');
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let currentTiltX = 0;
+  let currentTiltY = 0;
+  let tiltRaf = null;
+
+  function applyTilt(tx, ty) {
+    const maxTilt = 18;
+    const rx = Math.max(-maxTilt, Math.min(maxTilt, -ty * 0.04));
+    const ry = Math.max(-maxTilt, Math.min(maxTilt, tx * 0.04));
+    inner.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+  }
+
+  function resetTilt() {
+    currentTiltX = 0;
+    currentTiltY = 0;
+    inner.style.transition = 'transform 0.5s ease-out';
+    inner.style.transform = 'rotateX(0deg) rotateY(0deg)';
+    setTimeout(() => { inner.style.transition = 'transform 0.15s ease-out'; }, 500);
+  }
+
+  document.getElementById('mainPage').addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  document.getElementById('mainPage').addEventListener('touchmove', e => {
+    const dx = e.touches[0].clientX - touchStartX;
+    const dy = e.touches[0].clientY - touchStartY;
+    applyTilt(dx, dy);
+  }, { passive: true });
+
+  document.getElementById('mainPage').addEventListener('touchend', () => {
+    resetTilt();
+  });
+
+  /* Mouse support (desktop) */
+  document.getElementById('mainPage').addEventListener('mousemove', e => {
+    const cx = window.innerWidth / 2;
+    const cy = window.innerHeight / 2;
+    applyTilt(e.clientX - cx, e.clientY - cy);
+  });
+  document.getElementById('mainPage').addEventListener('mouseleave', () => {
+    resetTilt();
+  });
 }
 
 /* ===== MUSIK (TIDAK DIUBAH) ===== */
