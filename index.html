@@ -285,7 +285,140 @@ body {
   100% { transform: translateY(-105vh) rotate(360deg); opacity: 0; }
 }
 
-/* ===== HALAMAN ANIMASI (TIDAK DIUBAH) ===== */
+/* ===== KOTAK SURAT ===== */
+#letterBtn {
+  position: fixed;
+  bottom: 140px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(232,114,138,0.9), rgba(185,80,105,0.9));
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 20;
+  box-shadow: 0 0 18px rgba(232,114,138,0.6), 0 0 40px rgba(232,114,138,0.2);
+  animation: letterPulse 2s ease-in-out infinite;
+  display: none;
+}
+@keyframes letterPulse {
+  0%,100% { transform: translateX(-50%) scale(1); box-shadow: 0 0 18px rgba(232,114,138,0.6); }
+  50% { transform: translateX(-50%) scale(1.1); box-shadow: 0 0 30px rgba(232,114,138,0.9); }
+}
+
+/* Overlay gelap */
+#letterOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 200;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  backdrop-filter: blur(6px);
+}
+
+/* Kartu surat */
+#letterModal {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  max-height: 85vh;
+  background: linear-gradient(160deg, #2a0d18 0%, #1a0810 100%);
+  border: 1px solid rgba(201,168,108,0.35);
+  border-radius: 20px;
+  padding: 32px 24px 28px;
+  overflow-y: auto;
+  box-shadow: 0 0 60px rgba(232,114,138,0.25), inset 0 1px 0 rgba(255,255,255,0.05);
+  animation: modalIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+@keyframes modalIn {
+  from { transform: scale(0.7) translateY(40px); opacity: 0; }
+  to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* Ornamen sudut surat */
+#letterModal::before, #letterModal::after {
+  content: '';
+  position: absolute;
+  width: 55px; height: 55px;
+  border-color: rgba(201,168,108,0.2);
+  border-style: solid;
+}
+#letterModal::before { top:12px; left:12px; border-width:1px 0 0 1px; border-radius:6px 0 0 0; }
+#letterModal::after  { bottom:12px; right:12px; border-width:0 1px 1px 0; border-radius:0 0 6px 0; }
+
+.letter-icon {
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 6px;
+  filter: drop-shadow(0 0 10px rgba(232,114,138,0.7));
+}
+
+.letter-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--gold);
+  text-align: center;
+  letter-spacing: 1px;
+  margin-bottom: 14px;
+  opacity: 0.85;
+}
+
+.letter-divider {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 18px;
+}
+.letter-divider span { flex:1; height:1px; background: linear-gradient(90deg,transparent,rgba(201,168,108,0.35),transparent); }
+.letter-divider i { width:4px; height:4px; background:var(--gold); transform:rotate(45deg); opacity:0.5; }
+
+.letter-body {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(255,235,240,0.88);
+  line-height: 1.85;
+  text-align: justify;
+  white-space: pre-line;
+}
+
+.letter-body .dear {
+  font-style: italic;
+  color: var(--rose-light);
+  font-size: 16px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.letter-body .closing {
+  display: block;
+  margin-top: 18px;
+  font-style: italic;
+  color: var(--rose-light);
+  font-size: 16px;
+  text-align: center;
+  font-weight: 400;
+}
+
+#closeLetterBtn {
+  display: block;
+  margin: 22px auto 0;
+  padding: 10px 28px;
+  background: linear-gradient(135deg, rgba(232,114,138,0.85), rgba(185,80,105,0.85));
+  border: none;
+  border-radius: 50px;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(232,114,138,0.3);
+}
 #mainPage {
   display: none;
   perspective: 1200px;
@@ -459,7 +592,30 @@ body {
   <div id="mainInner">
     <button id="backBtn" onclick="goBack()">← Kembali</button>
     <button id="musicBtn" onclick="toggleMusic()">🎵 Play</button>
+    <button id="letterBtn" onclick="openLetter()" title="Baca Surat 💌">💌</button>
     <div class="bottom-text">untuk kamu yang paling spesial 💖</div>
+  </div>
+</div>
+
+<!-- ===== MODAL SURAT ===== -->
+<div id="letterOverlay" onclick="closeLetter(event)">
+  <div id="letterModal">
+    <div class="letter-icon">💌</div>
+    <div class="letter-title">— Sebuah Surat Untukmu —</div>
+    <div class="letter-divider"><span></span><i></i><span></span></div>
+    <div class="letter-body">
+      <span class="dear">Dear: Najwa Khoirunnisa' Az-Zahro Fii Sabilillah 💖</span>Happy Anniversary ke-3 ya, sayangku cintaaaaa…
+
+Sayangg, makasih yaa kamu masih tetap pilih aku sampai sejauh ini. Tiga tahun ini bukan waktu yang sebentar, dan aku bener-bener bersyukur banget bisa jalanin semuanya bareng kamu. Kamu masih jadi alasan kenapa aku ngerasa hidup ini lebih berarti, lebih tenang, dan lebih bahagia.
+
+Aku sadar aku belum sempurna, tapi aku terus belajar buat jadi lebih baik buat kamu. Bukan cuma janji lagi, tapi aku pengen buktiin pelan-pelan dengan tindakan. Aku juga pengen kamu tau, aku selalu ada buat kamu, dalam kondisi apapun, tanpa ragu.
+
+Makasih ya sayang udah sabar ngadepin aku, udah tetap bertahan walaupun kadang aku masih banyak kurangnya. Maaf juga kalau aku masih sering bikin kamu capek atau kesel… tapi percayalah, aku selalu usahakan yang terbaik buat kita.
+
+Aku berharap ke depannya kita bisa terus bareng, saling jaga, saling ngerti, dan tumbuh jadi versi terbaik dari diri kita masing-masing… tapi tetap satu tujuan. 🤍
+      <span class="closing">LOVE YOU SO MUCH ❤️❤️❤️</span>
+    </div>
+    <button id="closeLetterBtn" onclick="closeLetter()">Tutup 💖</button>
   </div>
 </div>
 
@@ -695,6 +851,10 @@ function startAnimation() {
     requestAnimationFrame(drawNeon);
   }
   requestAnimationFrame(drawNeon);
+
+  /* Tampilkan tombol surat */
+  document.getElementById('letterBtn').style.display = 'block';
+
   const inner = document.getElementById('mainInner');
   let touchStartX = 0;
   let touchStartY = 0;
@@ -741,6 +901,20 @@ function startAnimation() {
   document.getElementById('mainPage').addEventListener('mouseleave', () => {
     resetTilt();
   });
+}
+
+/* ===== SURAT ===== */
+function openLetter() {
+  const overlay = document.getElementById('letterOverlay');
+  overlay.style.display = 'flex';
+  // reset scroll surat ke atas
+  document.getElementById('letterModal').scrollTop = 0;
+}
+
+function closeLetter(e) {
+  if (!e || e.target === document.getElementById('letterOverlay') || e.currentTarget === document.getElementById('closeLetterBtn')) {
+    document.getElementById('letterOverlay').style.display = 'none';
+  }
 }
 
 /* ===== MUSIK (TIDAK DIUBAH) ===== */
